@@ -49,16 +49,18 @@ post_install do |installer|
       config.build_settings['ENABLE_BITCODE'] = 'NO'
 
       # Enhanced Swift compilation settings for Firebase CI compatibility
-      config.build_settings['SWIFT_VERSION'] = '6.0'
+      config.build_settings['SWIFT_VERSION'] = '5.10'
       config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
 
       # Firebase SDK CI compatibility settings
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'FIREBASE_CI_BUILD=1'
 
-      # Swift concurrency compatibility for Firebase
+      # Swift 6.0 concurrency compatibility for Flutter packages
       config.build_settings['SWIFT_STRICT_CONCURRENCY'] = 'minimal'
       config.build_settings['SWIFT_UPCOMING_FEATURE_CONCISE_MAGIC_FILE'] = 'NO'
+      config.build_settings['SWIFT_UPCOMING_FEATURE_SENDABLE_CHECKING'] = 'NO'
+      config.build_settings['SWIFT_DISABLE_SAFETY_CHECKS'] = 'NO'
 
       # Ensure proper Swift optimization for Firebase
       if config.name == 'Release'
@@ -73,6 +75,11 @@ post_install do |installer|
       config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
       config.build_settings['ONLY_ACTIVE_ARCH'] = 'YES'
       config.build_settings['VALID_ARCHS'] = 'arm64'
+
+      # Swift 6.0 Flutter package compatibility
+      config.build_settings['SWIFT_TREAT_WARNINGS_AS_ERRORS'] = 'NO'
+      config.build_settings['GCC_TREAT_WARNINGS_AS_ERRORS'] = 'NO'
+      config.build_settings['CLANG_WARN_STRICT_PROTOTYPES'] = 'NO'
     end
   end
 end

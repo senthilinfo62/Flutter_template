@@ -105,7 +105,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     env:
       # Firebase iOS build environment variables
-      SWIFT_VERSION: "6.0"
+      SWIFT_VERSION: "5.10"
       IPHONEOS_DEPLOYMENT_TARGET: "13.0"
       DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
 
@@ -146,17 +146,17 @@ jobs:
         # Install with specific Firebase SDK settings
         pod install --verbose
 
-    - name: Build iOS with Firebase compatibility fixes
+    - name: Build iOS with Flutter package compatibility
       run: |
-        # Set additional environment variables for Firebase compatibility
-        export SWIFT_VERSION=5.9
+        # Set additional environment variables for Flutter package compatibility
+        export SWIFT_VERSION=5.10
         export IPHONEOS_DEPLOYMENT_TARGET=13.0
 
-        # Build iOS with enhanced Firebase compatibility
-        echo "🚀 Building iOS with Firebase SDK compatibility settings..."
+        # Build iOS with enhanced Flutter package compatibility
+        echo "🚀 Building iOS with Flutter package compatibility settings..."
         flutter build ios --release --no-codesign \
-          --dart-define=FIREBASE_CORE_VERSION=3.14.0 \
-          --dart-define=FIREBASE_SDK_VERSION=11.13.0
+          --dart-define=SWIFT_STRICT_CONCURRENCY=minimal \
+          --dart-define=FLUTTER_PACKAGE_COMPATIBILITY=true
 
     - name: Upload iOS artifact (if build succeeded)
       uses: actions/upload-artifact@v4
