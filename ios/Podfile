@@ -51,6 +51,17 @@ post_install do |installer|
       # Fix Swift compilation issues with Firebase
       config.build_settings['SWIFT_VERSION'] = '5.0'
       config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
+
+      # Additional Firebase iOS compatibility settings
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'FIREBASE_VERSION=11.13.0'
+
+      # Ensure proper Swift optimization for Firebase
+      if config.name == 'Release'
+        config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-O'
+      else
+        config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-Onone'
+      end
     end
   end
 end

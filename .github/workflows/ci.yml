@@ -103,6 +103,10 @@ jobs:
     runs-on: macos-14
     needs: test
     if: github.ref == 'refs/heads/main'
+    env:
+      # Firebase iOS build environment variables
+      SWIFT_VERSION: "5.0"
+      IPHONEOS_DEPLOYMENT_TARGET: "14.0"
 
     steps:
     - name: Checkout code
@@ -124,8 +128,15 @@ jobs:
         cd ios
         pod install
 
+    - name: Fix Firebase Swift compatibility
+      run: |
+        # Set Xcode version and Swift settings for Firebase compatibility
+        sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer || true
+
     - name: Build iOS (no codesign)
-      run: flutter build ios --release --no-codesign
+      run: |
+        # Build with specific Swift version for Firebase compatibility
+        flutter build ios --release --no-codesign
 
     - name: Upload iOS artifact
       uses: actions/upload-artifact@v4
