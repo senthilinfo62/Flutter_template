@@ -49,7 +49,7 @@ post_install do |installer|
       config.build_settings['ENABLE_BITCODE'] = 'NO'
 
       # Enhanced Swift compilation settings for Firebase CI compatibility
-      config.build_settings['SWIFT_VERSION'] = '5.9'
+      config.build_settings['SWIFT_VERSION'] = '6.0'
       config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
 
       # Firebase SDK CI compatibility settings
