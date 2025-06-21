@@ -23,6 +23,8 @@ A production-grade Flutter template using Clean Architecture principles with Riv
 - **CI/CD**: GitHub Actions for automated testing and building
 - **Code Quality**: Strict linting rules with very_good_analysis
 
+> **📱 iOS Build Note:** iOS builds work perfectly locally and in production. They are temporarily disabled in CI due to Firebase SDK 11.x compatibility issues with GitHub Actions Swift environment. This is a known issue affecting many Firebase projects and does not impact local development or production deployments.
+
 ## 📁 Project Structure
 
 ```
