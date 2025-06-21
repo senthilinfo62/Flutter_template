@@ -58,8 +58,8 @@ lib/
 
 ### Prerequisites
 
-- Flutter SDK (>=3.24.0)
-- Dart SDK (>=3.5.0)
+- Flutter SDK (>=3.32.0)
+- Dart SDK (>=3.8.0)
 - Android Studio / VS Code
 - Git
 
