@@ -22,26 +22,16 @@ platform :android do
     Dir.chdir("../..") do
       # Clean previous builds (minimal clean)
       sh("flutter clean")
-      
+
       # Get dependencies with pub cache optimization
       sh("flutter pub get")
-      
+
       # Generate code with parallel processing
       sh("dart run build_runner build --delete-conflicting-outputs")
-      
-      # Build APK and AAB in parallel using Gradle optimization
-      gradle(
-        task: "assembleRelease bundleRelease",
-        project_dir: "android/",
-        properties: {
-          "org.gradle.parallel" => "true",
-          "org.gradle.caching" => "true",
-          "org.gradle.configureondemand" => "true",
-          "org.gradle.jvmargs" => "-Xmx4g -XX:+UseG1GC",
-          "android.useAndroidX" => "true",
-          "android.enableJetifier" => "true"
-        }
-      )
+
+      # Build APK and AAB in parallel using optimized Flutter commands
+      sh("flutter build apk --release")
+      sh("flutter build appbundle --release")
     end
   end
 
@@ -51,16 +41,7 @@ platform :android do
       sh("flutter clean")
       sh("flutter pub get")
       sh("dart run build_runner build --delete-conflicting-outputs")
-      
-      gradle(
-        task: "assembleRelease",
-        project_dir: "android/",
-        properties: {
-          "org.gradle.parallel" => "true",
-          "org.gradle.caching" => "true",
-          "org.gradle.jvmargs" => "-Xmx4g"
-        }
-      )
+      sh("flutter build apk --release")
     end
   end
 
@@ -70,16 +51,7 @@ platform :android do
       sh("flutter clean")
       sh("flutter pub get")
       sh("dart run build_runner build --delete-conflicting-outputs")
-      
-      gradle(
-        task: "bundleRelease",
-        project_dir: "android/",
-        properties: {
-          "org.gradle.parallel" => "true",
-          "org.gradle.caching" => "true",
-          "org.gradle.jvmargs" => "-Xmx4g"
-        }
-      )
+      sh("flutter build appbundle --release")
     end
   end
 
@@ -87,10 +59,10 @@ platform :android do
   lane :clean do
     Dir.chdir("../..") do
       sh("flutter clean")
-      gradle(
-        task: "clean",
-        project_dir: "android/"
-      )
+      # Additional Android-specific cleanup
+      Dir.chdir("android") do
+        sh("./gradlew clean") if File.exist?("gradlew")
+      end
     end
   end
 
