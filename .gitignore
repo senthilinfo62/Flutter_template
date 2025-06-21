@@ -83,6 +83,12 @@ build/ios/
 **/ios/DerivedData/
 **/ios/**/DerivedData/
 
+# iOS Dependency management (should not be committed for Flutter)
+**/ios/Podfile.lock
+ios/Podfile.lock
+**/ios/Pods/
+ios/Pods/
+
 # iOS Xcode artifacts
 **/ios/**/*.mode1v3
 **/ios/**/*.mode2v3
@@ -94,7 +100,6 @@ build/ios/
 **/ios/**/.tags*
 **/ios/**/.vagrant/
 **/ios/**/Icon?
-**/ios/**/Pods/
 **/ios/**/.symlinks/
 **/ios/**/profile
 **/ios/**/xcuserdata
