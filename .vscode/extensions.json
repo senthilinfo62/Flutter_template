@@ -1,0 +1,45 @@
+{
+  "recommendations": [
+    // Dart & Flutter
+    "dart-code.dart-code",
+    "dart-code.flutter",
+    
+    // Code Quality
+    "streetsidesoftware.code-spell-checker",
+    "usernamehw.errorlens",
+    "oderwat.indent-rainbow",
+    "bradlc.vscode-tailwindcss",
+    
+    // Git
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+    
+    // Productivity
+    "ms-vscode.vscode-json",
+    "redhat.vscode-yaml",
+    "ms-vscode.vscode-typescript-next",
+    
+    // Themes & Icons
+    "pkief.material-icon-theme",
+    "zhuangtongfa.material-theme",
+    
+    // Formatting
+    "esbenp.prettier-vscode",
+    "ms-vscode.vscode-json",
+    
+    // Documentation
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+    
+    // Testing
+    "hbenl.vscode-test-explorer",
+    "littlefoxteam.vscode-python-test-adapter",
+    
+    // Debugging
+    "ms-vscode.vscode-js-debug"
+  ],
+  "unwantedRecommendations": [
+    "ms-vscode.vscode-typescript",
+    "hookyqr.beautify"
+  ]
+}

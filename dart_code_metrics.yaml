@@ -1,0 +1,96 @@
+# Dart Code Metrics Configuration
+# Advanced code quality analysis and metrics
+
+dart_code_metrics:
+  # Metrics thresholds
+  metrics:
+    cyclomatic-complexity: 20
+    number-of-parameters: 4
+    maximum-nesting-level: 5
+    source-lines-of-code: 50
+    maintainability-index: 50
+    number-of-methods: 10
+    weight-of-class: 0.33
+    lines-of-code: 100
+    halstead-effort: 0
+    halstead-volume: 0
+    halstead-difficulty: 0
+
+  # Metrics exclude patterns
+  metrics-exclude:
+    - test/**
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.gr.dart"
+
+  # Rules configuration
+  rules:
+    # Common rules
+    - no-boolean-literal-compare
+    - no-empty-block
+    - prefer-trailing-comma
+    - prefer-conditional-expressions
+    - no-equal-then-else
+    - avoid-unnecessary-type-casts
+    - avoid-unnecessary-type-assertions
+    - avoid-unrelated-type-assertions
+    - avoid-unused-parameters
+    - binary-expression-operand-order
+    - double-literal-format
+    - newline-before-return
+    - no-object-declaration
+    - prefer-correct-identifier-length:
+        exceptions: [ 'i', 'j', 'k', 'id', 'db', 'ui' ]
+        max-identifier-length: 30
+        min-identifier-length: 4
+    - prefer-correct-type-name:
+        excluded: [ 'T', 'E', 'K', 'V' ]
+        min-length: 3
+        max-length: 40
+    - prefer-first
+    - prefer-last
+    - prefer-match-file-name
+    - prefer-moving-to-variable:
+        allowed-duplicated-chains: 3
+    - prefer-static-class
+    - prefer-immediate-return
+    - prefer-iterable-of
+    - prefer-single-widget-per-file:
+        ignore-private-widgets: true
+
+    # Flutter specific rules
+    - always-remove-listener
+    - avoid-returning-widgets:
+        ignored-names:
+          - testFunction
+        ignored-annotations:
+          - allowedAnnotation
+    - avoid-unnecessary-setstate
+    - avoid-wrapping-in-padding
+    - check-for-equals-in-render-object-setters
+    - consistent-update-render-object
+    - prefer-const-border-radius
+    - prefer-correct-edge-insets-constructor
+    - prefer-extracting-callbacks:
+        ignored-named-args:
+          - onPressed
+        allowed-line-count: 3
+    - prefer-single-widget-per-file:
+        ignore-private-widgets: true
+    - prefer-using-list-view
+    - use-setstate-synchronously
+
+  # Anti-patterns
+  anti-patterns:
+    - long-method
+    - long-parameter-list
+
+  # Exclude patterns
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.gr.dart"
+    - "build/**"
+    - "lib/generated/**"
+    - "test/**"
+    - "integration_test/**"

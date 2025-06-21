@@ -1,0 +1,41 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        generate_for:
+          - lib/**/*.dart
+        options:
+          # Generate copyWith methods
+          copy_with: true
+          # Generate toString methods
+          to_string: true
+          # Generate equality operators
+          equal: true
+          # Generate map methods
+          map: true
+          # Generate when methods for unions
+          when: true
+          # Generate maybeWhen methods for unions
+          maybe_when: true
+      
+      json_serializable:
+        generate_for:
+          - lib/**/*.dart
+        options:
+          # Generate toJson methods
+          create_to_json: true
+          # Generate factory methods
+          create_factory: true
+          # Use explicit toJson return type
+          explicit_to_json: true
+          # Include fields with null values
+          include_if_null: false
+          # Generate field rename
+          field_rename: none
+      
+      riverpod_generator:
+        generate_for:
+          - lib/**/*.dart
+        options:
+          # Generate providers
+          generate_providers: true

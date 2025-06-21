@@ -1,0 +1,174 @@
+{
+  "@@locale": "en",
+  "appTitle": "Flutter Clean Architecture Template",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  
+  "welcome": "Welcome",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  
+  "hello": "Hello {name}!",
+  "@hello": {
+    "description": "A greeting message",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "John"
+      }
+    }
+  },
+  
+  "todos": "Todos",
+  "@todos": {
+    "description": "Todos section title"
+  },
+  
+  "addTodo": "Add Todo",
+  "@addTodo": {
+    "description": "Add todo button text"
+  },
+  
+  "todoTitle": "Todo Title",
+  "@todoTitle": {
+    "description": "Todo title field label"
+  },
+  
+  "todoDescription": "Todo Description",
+  "@todoDescription": {
+    "description": "Todo description field label"
+  },
+  
+  "save": "Save",
+  "@save": {
+    "description": "Save button text"
+  },
+  
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button text"
+  },
+  
+  "edit": "Edit",
+  "@edit": {
+    "description": "Edit button text"
+  },
+  
+  "completed": "Completed",
+  "@completed": {
+    "description": "Completed status"
+  },
+  
+  "pending": "Pending",
+  "@pending": {
+    "description": "Pending status"
+  },
+  
+  "noTodos": "No todos yet",
+  "@noTodos": {
+    "description": "Empty state message for todos"
+  },
+  
+  "noTodosDescription": "Add your first todo to get started!",
+  "@noTodosDescription": {
+    "description": "Empty state description for todos"
+  },
+  
+  "error": "Error",
+  "@error": {
+    "description": "Error title"
+  },
+  
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button text"
+  },
+  
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading message"
+  },
+  
+  "networkError": "Network Error",
+  "@networkError": {
+    "description": "Network error title"
+  },
+  
+  "networkErrorDescription": "Please check your internet connection and try again.",
+  "@networkErrorDescription": {
+    "description": "Network error description"
+  },
+  
+  "serverError": "Server Error",
+  "@serverError": {
+    "description": "Server error title"
+  },
+  
+  "serverErrorDescription": "Something went wrong on our end. Please try again later.",
+  "@serverErrorDescription": {
+    "description": "Server error description"
+  },
+  
+  "validationRequired": "This field is required",
+  "@validationRequired": {
+    "description": "Required field validation message"
+  },
+  
+  "validationMinLength": "Must be at least {length} characters",
+  "@validationMinLength": {
+    "description": "Minimum length validation message",
+    "placeholders": {
+      "length": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings page title"
+  },
+  
+  "theme": "Theme",
+  "@theme": {
+    "description": "Theme setting label"
+  },
+  
+  "themeLight": "Light",
+  "@themeLight": {
+    "description": "Light theme option"
+  },
+  
+  "themeDark": "Dark",
+  "@themeDark": {
+    "description": "Dark theme option"
+  },
+  
+  "themeSystem": "System",
+  "@themeSystem": {
+    "description": "System theme option"
+  },
+  
+  "language": "Language",
+  "@language": {
+    "description": "Language setting label"
+  },
+  
+  "about": "About",
+  "@about": {
+    "description": "About section title"
+  },
+  
+  "version": "Version",
+  "@version": {
+    "description": "Version label"
+  }
+}

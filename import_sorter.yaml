@@ -1,0 +1,21 @@
+# Import Sorter Configuration
+# Automatically sorts and organizes imports in Dart files
+
+# Comments to add to the top of files
+comments:
+  - '// ignore_for_file: unused_import'
+
+# Import order configuration
+import_order:
+  - package:flutter
+  - package
+  - relative
+
+# Emojis for different import types
+emojis: false
+
+# Remove unused imports
+remove_unused_imports: true
+
+# Exit if changed
+exit_if_changed: false
