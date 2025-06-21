@@ -68,16 +68,22 @@ platform :android do
 
   desc "Build and upload to Play Store Internal Release"
   lane :deploy_internal do
+    # Configure environment based on branch
+    configure_environment
+
     # Build the app
     build_ci
 
     # Get version info
     version = get_version_name
     build_number = get_version_code
+    environment = get_environment
 
-    # Upload to Play Store Internal Release
+    # Upload to appropriate Play Store track based on environment
+    track = get_play_store_track(environment)
+
     upload_to_play_store(
-      track: 'internal',
+      track: track,
       aab: '../build/app/outputs/bundle/release/app-release.aab',
       skip_upload_apk: true,
       skip_upload_metadata: true,
@@ -88,7 +94,7 @@ platform :android do
 
     # Run post-deployment automation
     Dir.chdir("../..") do
-      sh("python3 scripts/post_deployment.py android #{version} #{build_number}")
+      sh("python3 scripts/post_deployment.py android #{version} #{build_number} #{environment}")
     end
   end
 
@@ -113,6 +119,42 @@ platform :android do
   end
 
   # Helper functions
+  def configure_environment
+    # Configure environment based on current branch
+    Dir.chdir("../..") do
+      sh("python3 scripts/environment_manager.py")
+    end
+  end
+
+  def get_environment
+    # Get current environment from branch
+    Dir.chdir("../..") do
+      branch = sh("git rev-parse --abbrev-ref HEAD").strip
+
+      if branch.start_with?('release/') || branch == 'main'
+        return 'production'
+      elsif ['development', 'develop', 'dev'].include?(branch) || branch.start_with?('qa/')
+        return 'staging'
+      else
+        return 'development'
+      end
+    end
+  end
+
+  def get_play_store_track(environment)
+    # Map environment to Play Store track
+    case environment
+    when 'production'
+      return 'internal'  # Use internal for production testing
+    when 'staging'
+      return 'internal'  # Use internal for staging
+    when 'development'
+      return 'internal'  # Use internal for development
+    else
+      return 'internal'
+    end
+  end
+
   def get_version_name
     # Extract version from pubspec.yaml
     Dir.chdir("../..") do

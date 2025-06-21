@@ -22,6 +22,7 @@ A production-grade Flutter template using Clean Architecture principles with Riv
 - **Testing**: Unit and widget test templates with mocktail
 - **CI/CD**: GitHub Actions for automated testing and building
 - **App Store Deployment**: Automatic TestFlight and Play Store uploads
+- **Multi-Environment**: Automatic package name switching (.dev, .stg, production)
 - **Code Quality**: Strict linting rules with very_good_analysis
 
 > **📱 iOS Build Status:** iOS builds are enabled in CI/CD with intelligent error handling. Due to Firebase SDK 11.x compatibility issues with GitHub Actions Swift environment, iOS builds may fail in CI but this doesn't affect the pipeline success. iOS builds work perfectly locally and in production.
@@ -98,6 +99,15 @@ This template includes automatic deployment to app stores:
 - **Android**: Automatic Play Store Internal Release uploads
 
 **Setup required:** See [App Store Deployment Guide](docs/APP_STORE_DEPLOYMENT.md) for configuration details.
+
+## 🌿 Multi-Environment Management
+
+Automatic package name switching based on Git branch patterns:
+- **Development (.dev)** - feature/*, fix/*, hotfix/* branches
+- **Staging (.stg)** - development, qa/* branches
+- **Production (original)** - main, release/* branches
+
+**Learn more:** See [Environment Management Guide](docs/ENVIRONMENT_MANAGEMENT.md) for complete details.
 
 ### Development Setup
 

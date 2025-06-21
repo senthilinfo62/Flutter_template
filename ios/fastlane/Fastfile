@@ -80,12 +80,16 @@ platform :ios do
 
   desc "Build and upload to TestFlight"
   lane :deploy_testflight do
+    # Configure environment based on branch
+    configure_environment
+
     # Build the app
     build_firebase
 
     # Get version info
     version = get_version_name
     build_number = get_version_code
+    environment = get_environment
 
     # Build and sign for App Store
     gym(
@@ -94,17 +98,17 @@ platform :ios do
       output_directory: "./build/ios/ipa"
     )
 
-    # Upload to TestFlight
+    # Upload to TestFlight with environment-specific settings
     upload_to_testflight(
       skip_waiting_for_build_processing: true,
       skip_submission: true,
-      distribute_external: false,
-      notify_external_testers: false
+      distribute_external: environment == 'production',
+      notify_external_testers: environment == 'production'
     )
 
     # Run post-deployment automation
     Dir.chdir("../..") do
-      sh("python3 scripts/post_deployment.py ios #{version} #{build_number}")
+      sh("python3 scripts/post_deployment.py ios #{version} #{build_number} #{environment}")
     end
   end
 
@@ -132,6 +136,28 @@ platform :ios do
   end
 
   # Helper functions
+  def configure_environment
+    # Configure environment based on current branch
+    Dir.chdir("../..") do
+      sh("python3 scripts/environment_manager.py")
+    end
+  end
+
+  def get_environment
+    # Get current environment from branch
+    Dir.chdir("../..") do
+      branch = sh("git rev-parse --abbrev-ref HEAD").strip
+
+      if branch.start_with?('release/') || branch == 'main'
+        return 'production'
+      elsif ['development', 'develop', 'dev'].include?(branch) || branch.start_with?('qa/')
+        return 'staging'
+      else
+        return 'development'
+      end
+    end
+  end
+
   def get_version_name
     # Extract version from pubspec.yaml
     Dir.chdir("../..") do
