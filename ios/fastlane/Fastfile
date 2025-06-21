@@ -1,0 +1,103 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Build iOS app for CI/CD"
+  lane :build_ci do
+    # Ensure we're in the right directory
+    Dir.chdir("..") do
+      # Clean previous builds
+      sh("flutter clean")
+
+      # Get dependencies
+      sh("flutter pub get")
+
+      # Generate code
+      sh("dart run build_runner build --delete-conflicting-outputs")
+
+      # Build iOS without codesigning
+      sh("flutter build ios --release --no-codesign")
+    end
+  end
+
+  desc "Build iOS app with Firebase compatibility fixes"
+  lane :build_firebase do
+    # Set environment variables for Firebase compatibility
+    ENV["SWIFT_VERSION"] = "5.0"
+    ENV["IPHONEOS_DEPLOYMENT_TARGET"] = "14.0"
+
+    # Ensure we're in the Flutter project root directory
+    Dir.chdir("../..") do
+      # Clean previous builds
+      sh("flutter clean")
+
+      # Get dependencies
+      sh("flutter pub get")
+
+      # Generate code
+      sh("dart run build_runner build --delete-conflicting-outputs")
+
+      # Update pods with specific Firebase settings
+      Dir.chdir("ios") do
+        sh("pod install --repo-update")
+      end
+
+      # Build iOS with specific Xcode settings
+      sh("flutter build ios --release --no-codesign")
+    end
+  end
+
+  desc "Setup iOS project for development"
+  lane :setup do
+    # Install pods
+    cocoapods(
+      clean_install: true,
+      podfile: "./Podfile"
+    )
+  end
+
+  desc "Run iOS tests"
+  lane :test do
+    # Run Flutter tests
+    Dir.chdir("..") do
+      sh("flutter test")
+    end
+  end
+
+  desc "Build and archive iOS app"
+  lane :archive do
+    # Build the app
+    build_firebase
+
+    # Archive the app (if needed for distribution)
+    gym(
+      scheme: "Runner",
+      export_method: "development",
+      skip_codesigning: true,
+      output_directory: "./build/ios/archive"
+    )
+  end
+
+  desc "Clean build artifacts"
+  lane :clean do
+    Dir.chdir("..") do
+      sh("flutter clean")
+      sh("cd ios && rm -rf build && cd ..")
+      sh("cd ios && pod cache clean --all && cd ..")
+    end
+  end
+end

@@ -1,0 +1,13 @@
+# app_identifier("[[APP_IDENTIFIER]]") # The bundle identifier of your app
+# apple_id("[[APPLE_ID]]") # Your Apple email address
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
+
+# Uncomment and configure these when setting up for a real project:
+# app_identifier("com.example.flutterProjects")
+# apple_id("your-apple-id@example.com")
+# team_id("YOUR_TEAM_ID")
+
+# For CI/CD builds, we don't need Apple ID configuration
+# since we're building without codesigning

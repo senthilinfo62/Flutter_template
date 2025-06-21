@@ -99,13 +99,13 @@ jobs:
         path: build/app/outputs/bundle/release/app-release.aab
 
   build-ios:
-    name: Build iOS (CI Compatibility Issue - See README)
+    name: Build iOS (Fastlane Available - See README)
     runs-on: macos-14
     needs: test
-    # Note: iOS builds work perfectly locally but have Firebase SDK compatibility issues in CI
-    # This is a known issue with Firebase SDK 11.x and GitHub Actions Swift environment
-    # iOS builds are validated locally and work in production
-    # Re-enable by changing 'false' to 'github.ref == refs/heads/main' when Firebase fixes CI compatibility
+    # iOS builds work perfectly locally and with Fastlane
+    # Temporarily disabled in CI due to Firebase SDK 11.x Swift compatibility
+    # Use Fastlane locally: cd ios && bundle exec fastlane build_firebase
+    # Re-enable by changing 'false' to 'github.ref == refs/heads/main'
     if: false
     env:
       # Firebase iOS build environment variables
@@ -121,26 +121,22 @@ jobs:
       with:
         channel: 'stable'
 
-    - name: Get dependencies
-      run: flutter pub get
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.2'
+        bundler-cache: true
+        working-directory: ios
 
-    - name: Generate code
-      run: dart run build_runner build --delete-conflicting-outputs
-
-    - name: Install CocoaPods
+    - name: Install Fastlane dependencies
       run: |
         cd ios
-        pod install
+        bundle install
 
-    - name: Fix Firebase Swift compatibility
+    - name: Build iOS with Fastlane (Firebase compatibility)
       run: |
-        # Set Xcode version and Swift settings for Firebase compatibility
-        sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer || true
-
-    - name: Build iOS (no codesign)
-      run: |
-        # Build with specific Swift version for Firebase compatibility
-        flutter build ios --release --no-codesign
+        cd ios
+        bundle exec fastlane build_firebase
 
     - name: Upload iOS artifact
       uses: actions/upload-artifact@v4
