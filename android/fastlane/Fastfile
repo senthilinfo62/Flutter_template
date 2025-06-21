@@ -1,0 +1,102 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Build Android APK and AAB for CI/CD (Optimized)"
+  lane :build_ci do
+    # Ensure we're in the Flutter project root
+    Dir.chdir("../..") do
+      # Clean previous builds (minimal clean)
+      sh("flutter clean")
+      
+      # Get dependencies with pub cache optimization
+      sh("flutter pub get")
+      
+      # Generate code with parallel processing
+      sh("dart run build_runner build --delete-conflicting-outputs")
+      
+      # Build APK and AAB in parallel using Gradle optimization
+      gradle(
+        task: "assembleRelease bundleRelease",
+        project_dir: "android/",
+        properties: {
+          "org.gradle.parallel" => "true",
+          "org.gradle.caching" => "true",
+          "org.gradle.configureondemand" => "true",
+          "org.gradle.jvmargs" => "-Xmx4g -XX:+UseG1GC",
+          "android.useAndroidX" => "true",
+          "android.enableJetifier" => "true"
+        }
+      )
+    end
+  end
+
+  desc "Build Android APK only (Fast)"
+  lane :build_apk do
+    Dir.chdir("../..") do
+      sh("flutter clean")
+      sh("flutter pub get")
+      sh("dart run build_runner build --delete-conflicting-outputs")
+      
+      gradle(
+        task: "assembleRelease",
+        project_dir: "android/",
+        properties: {
+          "org.gradle.parallel" => "true",
+          "org.gradle.caching" => "true",
+          "org.gradle.jvmargs" => "-Xmx4g"
+        }
+      )
+    end
+  end
+
+  desc "Build Android AAB only (Fast)"
+  lane :build_aab do
+    Dir.chdir("../..") do
+      sh("flutter clean")
+      sh("flutter pub get")
+      sh("dart run build_runner build --delete-conflicting-outputs")
+      
+      gradle(
+        task: "bundleRelease",
+        project_dir: "android/",
+        properties: {
+          "org.gradle.parallel" => "true",
+          "org.gradle.caching" => "true",
+          "org.gradle.jvmargs" => "-Xmx4g"
+        }
+      )
+    end
+  end
+
+  desc "Clean Android build artifacts"
+  lane :clean do
+    Dir.chdir("../..") do
+      sh("flutter clean")
+      gradle(
+        task: "clean",
+        project_dir: "android/"
+      )
+    end
+  end
+
+  desc "Setup Android development environment"
+  lane :setup do
+    # Verify Android SDK and tools
+    sh("flutter doctor -v")
+  end
+end
