@@ -100,17 +100,23 @@ jobs:
 
   build-ios:
     name: Build iOS
-    runs-on: macos-14
+    runs-on: macos-15
     needs: test
     if: github.ref == 'refs/heads/main'
     env:
       # Firebase iOS build environment variables
-      SWIFT_VERSION: "5.0"
-      IPHONEOS_DEPLOYMENT_TARGET: "14.0"
+      SWIFT_VERSION: "5.9"
+      IPHONEOS_DEPLOYMENT_TARGET: "13.0"
+      DEVELOPER_DIR: /Applications/Xcode_15.4.app/Contents/Developer
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Setup Xcode
+      run: |
+        sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+        xcodebuild -version
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -123,28 +129,25 @@ jobs:
     - name: Generate code
       run: dart run build_runner build --delete-conflicting-outputs
 
-    - name: Install CocoaPods
+    - name: Install CocoaPods with Firebase compatibility
       run: |
         cd ios
-        pod install
+        # Update CocoaPods repo for latest Firebase compatibility
+        pod repo update
+        # Install with specific Firebase SDK settings
+        pod install --verbose
 
-    - name: Build iOS (no codesign) with error handling
+    - name: Build iOS with Firebase compatibility fixes
       run: |
-        # Try building iOS with enhanced error handling
-        set +e  # Don't exit on error
-        flutter build ios --release --no-codesign
-        BUILD_EXIT_CODE=$?
+        # Set additional environment variables for Firebase compatibility
+        export SWIFT_VERSION=5.9
+        export IPHONEOS_DEPLOYMENT_TARGET=13.0
 
-        if [ $BUILD_EXIT_CODE -eq 0 ]; then
-          echo "✅ iOS build succeeded"
-          exit 0
-        else
-          echo "⚠️ iOS build failed with Firebase compatibility issues"
-          echo "This is a known issue with Firebase SDK 11.x in CI environments"
-          echo "iOS builds work perfectly locally and in production"
-          echo "Continuing CI pipeline..."
-          exit 0  # Don't fail the entire pipeline
-        fi
+        # Build iOS with enhanced Firebase compatibility
+        echo "🚀 Building iOS with Firebase SDK compatibility settings..."
+        flutter build ios --release --no-codesign \
+          --dart-define=FIREBASE_CORE_VERSION=3.14.0 \
+          --dart-define=FIREBASE_SDK_VERSION=11.13.0
 
     - name: Upload iOS artifact (if build succeeded)
       uses: actions/upload-artifact@v4
