@@ -66,6 +66,37 @@ platform :android do
     end
   end
 
+  desc "Build and upload to Play Store Internal Release"
+  lane :deploy_internal do
+    # Build the app
+    build_ci
+
+    # Upload to Play Store Internal Release
+    upload_to_play_store(
+      track: 'internal',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  desc "Build and upload to Play Store Alpha"
+  lane :deploy_alpha do
+    build_ci
+    upload_to_play_store(
+      track: 'alpha',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
   desc "Setup Android development environment"
   lane :setup do
     # Verify Android SDK and tools

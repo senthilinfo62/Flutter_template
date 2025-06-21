@@ -21,6 +21,7 @@ A production-grade Flutter template using Clean Architecture principles with Riv
 - **Bundle Optimization**: Tree shaking and code splitting
 - **Testing**: Unit and widget test templates with mocktail
 - **CI/CD**: GitHub Actions for automated testing and building
+- **App Store Deployment**: Automatic TestFlight and Play Store uploads
 - **Code Quality**: Strict linting rules with very_good_analysis
 
 > **📱 iOS Build Status:** iOS builds are enabled in CI/CD with intelligent error handling. Due to Firebase SDK 11.x compatibility issues with GitHub Actions Swift environment, iOS builds may fail in CI but this doesn't affect the pipeline success. iOS builds work perfectly locally and in production.
@@ -89,6 +90,14 @@ lib/
    ```bash
    flutter run
    ```
+
+## 📱 App Store Deployment
+
+This template includes automatic deployment to app stores:
+- **iOS**: Automatic TestFlight uploads after successful builds
+- **Android**: Automatic Play Store Internal Release uploads
+
+**Setup required:** See [App Store Deployment Guide](docs/APP_STORE_DEPLOYMENT.md) for configuration details.
 
 ### Development Setup
 

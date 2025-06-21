@@ -78,6 +78,27 @@ platform :ios do
     end
   end
 
+  desc "Build and upload to TestFlight"
+  lane :deploy_testflight do
+    # Build the app
+    build_firebase
+
+    # Build and sign for App Store
+    gym(
+      scheme: "Runner",
+      export_method: "app-store",
+      output_directory: "./build/ios/ipa"
+    )
+
+    # Upload to TestFlight
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      skip_submission: true,
+      distribute_external: false,
+      notify_external_testers: false
+    )
+  end
+
   desc "Build and archive iOS app"
   lane :archive do
     # Build the app
