@@ -50,6 +50,13 @@ app.*.map.json
 *.gr.dart
 *.config.dart
 
+# Firebase configuration files (actual files, not templates)
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+
+# Build configuration (generated)
+build_config/config_environment.json
+
 # Coverage
 coverage/
 

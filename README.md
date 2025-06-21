@@ -109,6 +109,15 @@ Automatic package name switching based on Git branch patterns:
 
 **Learn more:** See [Environment Management Guide](docs/ENVIRONMENT_MANAGEMENT.md) for complete details.
 
+## 🔥 Firebase Configuration
+
+Easy copy-paste Firebase setup for all environments:
+- **Templates provided** for Development, Staging, and Production
+- **Automatic configuration** switching based on Git branch
+- **Sample values** and step-by-step setup guide
+
+**Quick setup:** Run `./scripts/setup_firebase.sh` and follow the guide in `config/README.md`
+
 ### Development Setup
 
 1. **Install recommended VS Code extensions**
