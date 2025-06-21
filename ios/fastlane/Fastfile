@@ -83,6 +83,10 @@ platform :ios do
     # Build the app
     build_firebase
 
+    # Get version info
+    version = get_version_name
+    build_number = get_version_code
+
     # Build and sign for App Store
     gym(
       scheme: "Runner",
@@ -97,6 +101,11 @@ platform :ios do
       distribute_external: false,
       notify_external_testers: false
     )
+
+    # Run post-deployment automation
+    Dir.chdir("../..") do
+      sh("python3 scripts/post_deployment.py ios #{version} #{build_number}")
+    end
   end
 
   desc "Build and archive iOS app"
@@ -120,5 +129,26 @@ platform :ios do
       sh("cd ios && rm -rf build && cd ..")
       sh("cd ios && pod cache clean --all && cd ..")
     end
+  end
+
+  # Helper functions
+  def get_version_name
+    # Extract version from pubspec.yaml
+    Dir.chdir("../..") do
+      pubspec = File.read("pubspec.yaml")
+      version_line = pubspec.match(/version:\s*(.+)/)
+      return version_line[1].split('+')[0] if version_line
+    end
+    return "1.0.0"
+  end
+
+  def get_version_code
+    # Extract build number from pubspec.yaml
+    Dir.chdir("../..") do
+      pubspec = File.read("pubspec.yaml")
+      version_line = pubspec.match(/version:\s*(.+)/)
+      return version_line[1].split('+')[1] if version_line && version_line[1].include?('+')
+    end
+    return "1"
   end
 end

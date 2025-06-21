@@ -81,6 +81,15 @@ jobs:
         bundler-cache: true
         working-directory: android
 
+    - name: Setup Python for post-deployment automation
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install Python dependencies
+      run: |
+        pip install -r scripts/requirements.txt
+
     - name: Install Fastlane dependencies
       run: |
         cd android
@@ -151,6 +160,15 @@ jobs:
 
     - name: Generate code
       run: dart run build_runner build --delete-conflicting-outputs
+
+    - name: Setup Python for post-deployment automation
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install Python dependencies
+      run: |
+        pip install -r scripts/requirements.txt
 
     - name: Install CocoaPods with Firebase compatibility
       run: |

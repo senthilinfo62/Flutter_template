@@ -137,6 +137,71 @@ After successful setup:
 - **Reduced errors** - Automated process eliminates manual mistakes
 - **Team efficiency** - Developers focus on coding, not deployment
 
+## 🤖 Post-Deployment Automation
+
+After successful app store uploads, the system automatically:
+
+### 📢 Notifications
+- **Slack notifications** with release details and changelog
+- **Email notifications** (if configured)
+- **Team mentions** for QA assignments
+
+### 📝 Documentation
+- **Auto-generated release notes** in `docs/releases/`
+- **Changelog from Git commits** since last release
+- **QA checklists** with download instructions
+
+### 🧪 QA Process Automation
+- **Notion pages** for QA tracking (if configured)
+- **Trello cards** for task management (if configured)
+- **Jira tickets** for issue tracking (if configured)
+
+### 📊 Metadata Logging
+- **JSON logs** in `logs/release_history.json`
+- **CSV logs** in `logs/release_history.csv`
+- **Historical tracking** of all releases
+
+### 🏷️ Git Tagging
+- **Automatic tagging** as `release-ios-vX.Y.Z` or `release-android-vX.Y.Z`
+- **Push to remote** for version tracking
+
+## 🔧 Post-Deployment Configuration
+
+### Required GitHub Secrets
+```
+# Slack Integration
+SLACK_WEBHOOK_URL
+
+# Notion Integration (optional)
+NOTION_TOKEN
+NOTION_QA_DATABASE_ID
+
+# Trello Integration (optional)
+TRELLO_API_KEY
+TRELLO_TOKEN
+TRELLO_QA_LIST_ID
+
+# Jira Integration (optional)
+JIRA_URL
+JIRA_EMAIL
+JIRA_API_TOKEN
+JIRA_PROJECT_KEY
+
+# QA Assignment
+QA_ASSIGNEE
+```
+
+### Slack Webhook Setup
+1. Go to your Slack workspace
+2. Create a new app or use existing
+3. Add Incoming Webhooks
+4. Copy webhook URL to GitHub secrets
+
+### Notion Integration Setup
+1. Create Notion integration at https://www.notion.so/my-integrations
+2. Create a database for QA tracking
+3. Add integration token and database ID to secrets
+
 ## 🔧 Troubleshooting
 
 ### Common Issues
@@ -144,9 +209,13 @@ After successful setup:
 2. **Service account permissions** - Verify Play Console access
 3. **Version conflicts** - Ensure version numbers are incremented
 4. **Build signing** - Verify code signing configuration
+5. **Python dependencies** - Ensure scripts/requirements.txt is installed
+6. **Webhook failures** - Check Slack/Notion/Trello credentials
 
 ### Support Resources
 - [Fastlane iOS Documentation](https://docs.fastlane.tools/getting-started/ios/)
 - [Fastlane Android Documentation](https://docs.fastlane.tools/getting-started/android/)
 - [App Store Connect API](https://developer.apple.com/app-store-connect/api/)
 - [Google Play Console API](https://developers.google.com/android-publisher)
+- [Slack Webhooks](https://api.slack.com/messaging/webhooks)
+- [Notion API](https://developers.notion.com/)
