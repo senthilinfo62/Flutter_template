@@ -75,6 +75,31 @@ coverage/
 **/android/fastlane/screenshots
 **/android/fastlane/test_output
 
+# iOS Build artifacts (should never be committed)
+**/ios/build/
+**/ios/**/build/
+ios/build/
+build/ios/
+**/ios/DerivedData/
+**/ios/**/DerivedData/
+
+# iOS Xcode artifacts
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*sync/
+**/ios/**/.sconsign.dblite
+**/ios/**/.tags*
+**/ios/**/.vagrant/
+**/ios/**/Icon?
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/profile
+**/ios/**/xcuserdata
+**/ios/.generated/
+
 # FVM
 .fvm/
 
