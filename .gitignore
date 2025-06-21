@@ -75,6 +75,28 @@ coverage/
 **/android/fastlane/screenshots
 **/android/fastlane/test_output
 
+# Ruby/Fastlane dependencies (should not be committed for Flutter)
+**/ios/Gemfile.lock
+ios/Gemfile.lock
+**/android/Gemfile.lock
+android/Gemfile.lock
+**/macos/Gemfile.lock
+macos/Gemfile.lock
+
+# macOS Dependencies (should not be committed)
+**/macos/Podfile.lock
+macos/Podfile.lock
+**/macos/Pods/
+macos/Pods/
+
+# Android Build artifacts and cache
+**/android/.gradle/
+android/.gradle/
+**/android/build/
+android/build/
+**/android/app/build/
+android/app/build/
+
 # iOS Build artifacts (should never be committed)
 **/ios/build/
 **/ios/**/build/
