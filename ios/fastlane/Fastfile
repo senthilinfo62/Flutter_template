@@ -78,7 +78,7 @@ platform :ios do
     end
   end
 
-  desc "Build and upload to TestFlight"
+  desc "Build and distribute based on environment"
   lane :deploy_testflight do
     # Configure environment based on branch
     configure_environment
@@ -91,20 +91,39 @@ platform :ios do
     build_number = get_version_code
     environment = get_environment
 
-    # Build and sign for App Store
-    gym(
-      scheme: "Runner",
-      export_method: "app-store",
-      output_directory: "./build/ios/ipa"
-    )
+    # Handle distribution based on environment
+    if should_distribute_firebase(environment)
+      # Firebase App Distribution for dev/stg
+      # Build for development distribution
+      gym(
+        scheme: "Runner",
+        export_method: "development",
+        output_directory: "./build/ios/ipa"
+      )
 
-    # Upload to TestFlight with environment-specific settings
-    upload_to_testflight(
-      skip_waiting_for_build_processing: true,
-      skip_submission: true,
-      distribute_external: environment == 'production',
-      notify_external_testers: environment == 'production'
-    )
+      firebase_app_distribution(
+        app: get_firebase_app_id(environment),
+        groups: get_firebase_groups(environment),
+        release_notes: generate_release_notes(version, environment),
+        firebase_cli_path: "/usr/local/bin/firebase"
+      )
+      puts "✅ Distributed to Firebase App Distribution (#{environment.upcase})"
+    else
+      # TestFlight for production
+      gym(
+        scheme: "Runner",
+        export_method: "app-store",
+        output_directory: "./build/ios/ipa"
+      )
+
+      upload_to_testflight(
+        skip_waiting_for_build_processing: true,
+        skip_submission: true,
+        distribute_external: false,
+        notify_external_testers: false
+      )
+      puts "✅ Uploaded to TestFlight (#{environment.upcase})"
+    end
 
     # Run post-deployment automation
     Dir.chdir("../..") do
@@ -176,5 +195,51 @@ platform :ios do
       return version_line[1].split('+')[1] if version_line && version_line[1].include?('+')
     end
     return "1"
+  end
+
+  def should_distribute_firebase(environment)
+    # Only dev and stg use Firebase App Distribution
+    ['development', 'staging'].include?(environment)
+  end
+
+  def get_firebase_app_id(environment)
+    # Firebase App IDs for each environment
+    case environment
+    when 'development'
+      return ENV['FIREBASE_APP_ID_IOS_DEV'] || "1:123456789012:ios:wxyz5678abcd9012"
+    when 'staging'
+      return ENV['FIREBASE_APP_ID_IOS_STG'] || "1:234567890123:ios:ijkl9012mnop3456"
+    else
+      return nil
+    end
+  end
+
+  def get_firebase_groups(environment)
+    # Firebase distribution groups
+    case environment
+    when 'development'
+      return "ios-developers, qa-team"
+    when 'staging'
+      return "qa-team, stakeholders, beta-testers"
+    else
+      return nil
+    end
+  end
+
+  def generate_release_notes(version, environment)
+    # Generate release notes for Firebase distribution
+    Dir.chdir("../..") do
+      changelog = sh("git log --oneline -5 --pretty=format:'- %s'").strip rescue "- Latest changes"
+
+      notes = "🍎 iOS #{environment.upcase} Build v#{version}\n\n"
+      notes += "📝 Recent Changes:\n#{changelog}\n\n"
+      notes += "🔧 Environment: #{environment.upcase}\n"
+      notes += "📱 Bundle ID: com.example.flutter.projects"
+      notes += environment == 'development' ? '.dev' : (environment == 'staging' ? '.stg' : '')
+      notes += "\n\n🧪 This is a #{environment} build for testing purposes."
+      notes += "\n\n📲 Install via Firebase App Distribution"
+
+      return notes
+    end
   end
 end

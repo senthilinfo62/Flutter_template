@@ -90,6 +90,11 @@ jobs:
       run: |
         pip install -r scripts/requirements.txt
 
+    - name: Install Firebase CLI
+      run: |
+        curl -sL https://firebase.tools | bash
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+
     - name: Configure environment based on branch
       run: |
         python3 scripts/environment_manager.py
@@ -174,6 +179,11 @@ jobs:
     - name: Install Python dependencies
       run: |
         pip install -r scripts/requirements.txt
+
+    - name: Install Firebase CLI
+      run: |
+        curl -sL https://firebase.tools | bash
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Install CocoaPods with Firebase compatibility
       run: |

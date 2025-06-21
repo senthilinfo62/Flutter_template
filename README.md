@@ -94,11 +94,13 @@ lib/
 
 ## 📱 App Store Deployment
 
-This template includes automatic deployment to app stores:
-- **iOS**: Automatic TestFlight uploads after successful builds
-- **Android**: Automatic Play Store Internal Release uploads
+This template includes automatic deployment based on environment:
+- **Development/Staging**: Firebase App Distribution for fast testing
+- **Production**: TestFlight (iOS) and Play Store (Android) for releases
 
-**Setup required:** See [App Store Deployment Guide](docs/APP_STORE_DEPLOYMENT.md) for configuration details.
+**Setup guides:**
+- [App Store Deployment](docs/APP_STORE_DEPLOYMENT.md) for production releases
+- [Firebase Distribution](docs/FIREBASE_DISTRIBUTION.md) for dev/stg testing
 
 ## 🌿 Multi-Environment Management
 
