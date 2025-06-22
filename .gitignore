@@ -142,3 +142,9 @@ local.properties
 
 # Node.js
 node_modules/
+
+# Setup scripts should be committed for easy project initialization
+!setup.sh
+!setup.bat
+!setup_new_project.py
+!SETUP_DEMO.md
