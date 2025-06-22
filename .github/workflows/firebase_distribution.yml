@@ -1,0 +1,177 @@
+name: 🚀 Firebase Distribution CI/CD
+
+on:
+  push:
+    branches: [ feature/*, develop, staging ]
+  pull_request:
+    branches: [ develop, staging ]
+
+env:
+  FLUTTER_VERSION: '3.24.5'
+  JAVA_VERSION: '17'
+
+jobs:
+  # Determine which environment to build based on branch
+  determine-environment:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.env.outputs.environment }}
+      should_distribute: ${{ steps.env.outputs.should_distribute }}
+    steps:
+      - name: Determine Environment
+        id: env
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/develop" || "${{ github.ref }}" == *"feature/"* ]]; then
+            echo "environment=dev" >> $GITHUB_OUTPUT
+            echo "should_distribute=true" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+            echo "environment=stg" >> $GITHUB_OUTPUT
+            echo "should_distribute=true" >> $GITHUB_OUTPUT
+          else
+            echo "environment=prod" >> $GITHUB_OUTPUT
+            echo "should_distribute=false" >> $GITHUB_OUTPUT
+          fi
+
+  # Build and distribute Android
+  build-android:
+    needs: determine-environment
+    if: needs.determine-environment.outputs.should_distribute == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📚 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Get Dependencies
+        run: flutter pub get
+
+      - name: 🔧 Setup Android Signing
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks
+          echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=keystore.jks" >> android/key.properties
+
+      - name: 🔨 Build Android APK
+        run: |
+          ENV=${{ needs.determine-environment.outputs.environment }}
+          if [ "$ENV" = "dev" ]; then
+            flutter build apk --target lib/main_dev.dart --flavor dev --dart-define=FLUTTER_ENV=dev --release
+          elif [ "$ENV" = "stg" ]; then
+            flutter build apk --target lib/main_stg.dart --flavor stg --dart-define=FLUTTER_ENV=stg --release
+          fi
+
+      - name: 🚀 Distribute to Firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ needs.determine-environment.outputs.environment == 'dev' && secrets.FIREBASE_ANDROID_APP_ID_DEV || secrets.FIREBASE_ANDROID_APP_ID_STG }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+          groups: ${{ needs.determine-environment.outputs.environment == 'dev' && 'developers' || 'qa-team' }}
+          file: build/app/outputs/flutter-apk/app-${{ needs.determine-environment.outputs.environment }}-release.apk
+          releaseNotes: |
+            🚀 New ${{ needs.determine-environment.outputs.environment }} build from commit: ${{ github.sha }}
+            
+            📝 Changes:
+            ${{ github.event.head_commit.message }}
+            
+            🔗 Branch: ${{ github.ref_name }}
+            👤 Author: ${{ github.actor }}
+            📅 Built: ${{ github.event.head_commit.timestamp }}
+
+  # Build and distribute iOS
+  build-ios:
+    needs: determine-environment
+    if: needs.determine-environment.outputs.should_distribute == 'true'
+    runs-on: macos-latest
+    steps:
+      - name: 📚 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Get Dependencies
+        run: flutter pub get
+
+      - name: 🍎 Setup iOS Signing
+        run: |
+          # Create provisioning profile directory
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          
+          # Decode and save provisioning profile
+          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/distribution.mobileprovision
+          
+          # Create keychain and import certificate
+          security create-keychain -p "${{ secrets.IOS_KEYCHAIN_PASSWORD }}" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "${{ secrets.IOS_KEYCHAIN_PASSWORD }}" build.keychain
+          echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 -d > certificate.p12
+          security import certificate.p12 -k build.keychain -P "${{ secrets.IOS_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "${{ secrets.IOS_KEYCHAIN_PASSWORD }}" build.keychain
+
+      - name: 🔨 Build iOS IPA
+        run: |
+          ENV=${{ needs.determine-environment.outputs.environment }}
+          if [ "$ENV" = "dev" ]; then
+            flutter build ios --target lib/main_dev.dart --dart-define=FLUTTER_ENV=dev --release --no-codesign
+          elif [ "$ENV" = "stg" ]; then
+            flutter build ios --target lib/main_stg.dart --dart-define=FLUTTER_ENV=stg --release --no-codesign
+          fi
+          
+          # Create IPA
+          cd build/ios/iphoneos
+          mkdir Payload
+          cp -r Runner.app Payload/
+          zip -r app-${{ needs.determine-environment.outputs.environment }}.ipa Payload/
+
+      - name: 🚀 Distribute to Firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ needs.determine-environment.outputs.environment == 'dev' && secrets.FIREBASE_IOS_APP_ID_DEV || secrets.FIREBASE_IOS_APP_ID_STG }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+          groups: ${{ needs.determine-environment.outputs.environment == 'dev' && 'developers' || 'qa-team' }}
+          file: build/ios/iphoneos/app-${{ needs.determine-environment.outputs.environment }}.ipa
+          releaseNotes: |
+            🚀 New ${{ needs.determine-environment.outputs.environment }} build from commit: ${{ github.sha }}
+            
+            📝 Changes:
+            ${{ github.event.head_commit.message }}
+            
+            🔗 Branch: ${{ github.ref_name }}
+            👤 Author: ${{ github.actor }}
+            📅 Built: ${{ github.event.head_commit.timestamp }}
+
+  # Notify on completion
+  notify:
+    needs: [determine-environment, build-android, build-ios]
+    if: always() && needs.determine-environment.outputs.should_distribute == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📢 Notify Success
+        if: needs.build-android.result == 'success' && needs.build-ios.result == 'success'
+        run: |
+          echo "🎉 Successfully distributed ${{ needs.determine-environment.outputs.environment }} builds to Firebase!"
+          echo "📱 Android APK and iOS IPA are now available for testing"
+          
+      - name: 📢 Notify Failure
+        if: needs.build-android.result == 'failure' || needs.build-ios.result == 'failure'
+        run: |
+          echo "❌ Build failed for ${{ needs.determine-environment.outputs.environment }} environment"
+          exit 1

@@ -71,6 +71,10 @@ coverage/
 **/ios/Runner/GoogleService-Info.plist
 **/android/app/google-services.json
 **/lib/firebase_options.dart
+firebase-debug.log
+firebase-debug.*.log
+firebase-service-account.json
+.env.firebase
 
 # Fastlane
 **/ios/fastlane/report.xml

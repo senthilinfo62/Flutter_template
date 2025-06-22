@@ -1,4 +1,12 @@
 {
+  "projects": {
+    "dev": "fluttertemplate-74068-dev",
+    "stg": "fluttertemplate-74068-stg",
+    "prod": "fluttertemplate-74068"
+  },
+  "appDistribution": {
+    "serviceCredentialsFile": "firebase-service-account.json"
+  },
   "hosting": {
     "public": "build/web",
     "ignore": [
