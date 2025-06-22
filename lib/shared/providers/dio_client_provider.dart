@@ -1,6 +1,8 @@
+// Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Project imports:
 import '../../core/constants/app_constants.dart';
 
 /// Dio client provider for HTTP requests

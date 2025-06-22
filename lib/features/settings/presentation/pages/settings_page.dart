@@ -1,9 +1,14 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
+// Project imports:
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/navigation/app_router.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../shared/providers/locale_provider.dart';
 import '../../../../shared/providers/theme_provider.dart';
@@ -74,6 +79,31 @@ class SettingsPage extends ConsumerWidget {
                   ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => _showLanguageDialog(context, ref),
+                ),
+              ],
+            ),
+          ),
+
+          const Gap(AppConstants.defaultPadding),
+
+          // Notifications Section
+          AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Notifications',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const Gap(AppConstants.defaultPadding),
+                ListTile(
+                  leading: Icon(Icons.notifications, color: colorScheme.primary),
+                  title: const Text('Push Notifications'),
+                  subtitle: const Text('Manage notification settings'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push(AppRouter.notificationSettings),
                 ),
               ],
             ),
