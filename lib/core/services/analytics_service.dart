@@ -1,5 +1,7 @@
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Project imports:
 import 'firebase_service.dart';
 
 /// Analytics service provider

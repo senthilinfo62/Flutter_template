@@ -1,26 +1,48 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
 import 'package:gap/gap.dart';
 
+// Project imports:
 import '../constants/app_constants.dart';
 import 'app_button.dart';
 
-/// Generic error widget that can be used throughout the app
+// Constants for error widget styling
+const double _kIconSize = 64;
+const TextAlign _kTextAlign = TextAlign.center;
+
+/// A reusable error widget that displays error messages with optional retry functionality.
+///
+/// This widget provides a consistent error UI across the application with:
+/// - Customizable error icon
+/// - Error title and message
+/// - Optional retry button
+/// - Responsive design with proper spacing
+///
+/// Example usage:
+/// ```dart
+/// AppErrorWidget(
+///   title: 'Network Error',
+///   message: 'Please check your internet connection',
+///   onRetry: () => _retryOperation(),
+/// )
+/// ```
 class AppErrorWidget extends StatelessWidget {
   const AppErrorWidget({
     required this.message,
     super.key,
-    this.title,
-    this.icon,
-    this.showRetryButton = true,
     this.onRetry,
+    this.icon,
+    this.title,
+    this.showRetryButton = true,
   });
 
   final String message;
-  final String? title;
-  final IconData? icon;
-  final bool showRetryButton;
   final VoidCallback? onRetry;
+  final IconData? icon;
+  final String? title;
+  final bool showRetryButton;
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +57,10 @@ class AppErrorWidget extends StatelessWidget {
           children: [
             Icon(
               icon ?? Icons.error_outline,
-              size: 64,
+              size: _kIconSize,
               color: colorScheme.error,
             ),
-            Gap(AppConstants.defaultPadding),
+            const Gap(AppConstants.defaultPadding),
             if (title != null) ...[
               Text(
                 title!,
@@ -46,19 +68,19 @@ class AppErrorWidget extends StatelessWidget {
                   color: colorScheme.onSurface,
                   fontWeight: FontWeight.w600,
                 ),
-                textAlign: TextAlign.center,
+                textAlign: _kTextAlign,
               ),
-              Gap(AppConstants.smallPadding),
+              const Gap(AppConstants.smallPadding),
             ],
             Text(
               message,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurface.withValues(alpha: 0.7),
               ),
-              textAlign: TextAlign.center,
+              textAlign: _kTextAlign,
             ),
             if (showRetryButton && onRetry != null) ...[
-              Gap(AppConstants.largePadding),
+              const Gap(AppConstants.largePadding),
               AppButton(text: 'Retry', onPressed: onRetry, icon: Icons.refresh),
             ],
           ],
@@ -130,10 +152,10 @@ class EmptyStateWidget extends StatelessWidget {
           children: [
             Icon(
               icon ?? Icons.inbox_outlined,
-              size: 64,
+              size: _kIconSize,
               color: colorScheme.onSurface.withValues(alpha: 0.5),
             ),
-            Gap(AppConstants.defaultPadding),
+            const Gap(AppConstants.defaultPadding),
             if (title != null) ...[
               Text(
                 title!,
@@ -141,19 +163,19 @@ class EmptyStateWidget extends StatelessWidget {
                   color: colorScheme.onSurface,
                   fontWeight: FontWeight.w600,
                 ),
-                textAlign: TextAlign.center,
+                textAlign: _kTextAlign,
               ),
-              Gap(AppConstants.smallPadding),
+              const Gap(AppConstants.smallPadding),
             ],
             Text(
               message,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurface.withValues(alpha: 0.7),
               ),
-              textAlign: TextAlign.center,
+              textAlign: _kTextAlign,
             ),
             if (actionText != null && onAction != null) ...[
-              Gap(AppConstants.largePadding),
+              const Gap(AppConstants.largePadding),
               AppButton(text: actionText!, onPressed: onAction),
             ],
           ],
