@@ -1,0 +1,118 @@
+name: 🧪 Test Build CI/CD
+
+on:
+  push:
+    branches: [ feature/*, develop, staging, main ]
+  pull_request:
+    branches: [ develop, staging, main ]
+
+env:
+  FLUTTER_VERSION: '3.32.4'
+  JAVA_VERSION: '17'
+
+jobs:
+  # Test builds without distribution (for now)
+  test-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [dev, stg, prod]
+    
+    steps:
+      - name: 📚 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Get Dependencies
+        run: flutter pub get
+
+      - name: 🔍 Run Analysis
+        run: flutter analyze
+
+      - name: 🧪 Run Tests
+        run: flutter test
+
+      - name: 🔨 Test Build Android APK
+        run: |
+          ENV=${{ matrix.environment }}
+          if [ "$ENV" = "dev" ]; then
+            flutter build apk --target lib/main_dev.dart --flavor dev --dart-define=FLUTTER_ENV=dev --debug
+          elif [ "$ENV" = "stg" ]; then
+            flutter build apk --target lib/main_stg.dart --flavor stg --dart-define=FLUTTER_ENV=stg --debug
+          else
+            flutter build apk --target lib/main.dart --flavor prod --dart-define=FLUTTER_ENV=prod --debug
+          fi
+
+      - name: 📋 Build Summary
+        run: |
+          echo "✅ ${{ matrix.environment }} build completed successfully!"
+          echo "📱 APK: build/app/outputs/flutter-apk/app-${{ matrix.environment }}-debug.apk"
+
+  # Test iOS build on macOS
+  test-ios-build:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        environment: [dev, stg, prod]
+    
+    steps:
+      - name: 📚 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Get Dependencies
+        run: flutter pub get
+
+      - name: 🔨 Test Build iOS
+        run: |
+          ENV=${{ matrix.environment }}
+          if [ "$ENV" = "dev" ]; then
+            flutter build ios --target lib/main_dev.dart --dart-define=FLUTTER_ENV=dev --debug --no-codesign
+          elif [ "$ENV" = "stg" ]; then
+            flutter build ios --target lib/main_stg.dart --dart-define=FLUTTER_ENV=stg --debug --no-codesign
+          else
+            flutter build ios --target lib/main.dart --dart-define=FLUTTER_ENV=prod --debug --no-codesign
+          fi
+
+      - name: 📋 Build Summary
+        run: |
+          echo "✅ ${{ matrix.environment }} iOS build completed successfully!"
+          echo "📱 iOS App: build/ios/iphoneos/Runner.app"
+
+  # Summary job
+  build-summary:
+    needs: [test-build, test-ios-build]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: 📊 Build Results
+        run: |
+          echo "🎯 Build Results Summary:"
+          echo "Android Builds: ${{ needs.test-build.result }}"
+          echo "iOS Builds: ${{ needs.test-ios-build.result }}"
+          
+          if [[ "${{ needs.test-build.result }}" == "success" && "${{ needs.test-ios-build.result }}" == "success" ]]; then
+            echo "🎉 All builds successful! Ready for Firebase distribution setup."
+          else
+            echo "❌ Some builds failed. Check logs above."
+            exit 1
+          fi

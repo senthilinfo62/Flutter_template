@@ -7,7 +7,7 @@ on:
     branches: [ develop, staging ]
 
 env:
-  FLUTTER_VERSION: '3.24.5'
+  FLUTTER_VERSION: '3.32.4'
   JAVA_VERSION: '17'
 
 jobs:
@@ -83,10 +83,10 @@ jobs:
           file: build/app/outputs/flutter-apk/app-${{ needs.determine-environment.outputs.environment }}-release.apk
           releaseNotes: |
             🚀 New ${{ needs.determine-environment.outputs.environment }} build from commit: ${{ github.sha }}
-            
+
             📝 Changes:
             ${{ github.event.head_commit.message }}
-            
+
             🔗 Branch: ${{ github.ref_name }}
             👤 Author: ${{ github.actor }}
             📅 Built: ${{ github.event.head_commit.timestamp }}
@@ -114,10 +114,10 @@ jobs:
         run: |
           # Create provisioning profile directory
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          
+
           # Decode and save provisioning profile
           echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/distribution.mobileprovision
-          
+
           # Create keychain and import certificate
           security create-keychain -p "${{ secrets.IOS_KEYCHAIN_PASSWORD }}" build.keychain
           security default-keychain -s build.keychain
@@ -134,7 +134,7 @@ jobs:
           elif [ "$ENV" = "stg" ]; then
             flutter build ios --target lib/main_stg.dart --dart-define=FLUTTER_ENV=stg --release --no-codesign
           fi
-          
+
           # Create IPA
           cd build/ios/iphoneos
           mkdir Payload
@@ -150,10 +150,10 @@ jobs:
           file: build/ios/iphoneos/app-${{ needs.determine-environment.outputs.environment }}.ipa
           releaseNotes: |
             🚀 New ${{ needs.determine-environment.outputs.environment }} build from commit: ${{ github.sha }}
-            
+
             📝 Changes:
             ${{ github.event.head_commit.message }}
-            
+
             🔗 Branch: ${{ github.ref_name }}
             👤 Author: ${{ github.actor }}
             📅 Built: ${{ github.event.head_commit.timestamp }}
@@ -169,7 +169,7 @@ jobs:
         run: |
           echo "🎉 Successfully distributed ${{ needs.determine-environment.outputs.environment }} builds to Firebase!"
           echo "📱 Android APK and iOS IPA are now available for testing"
-          
+
       - name: 📢 Notify Failure
         if: needs.build-android.result == 'failure' || needs.build-ios.result == 'failure'
         run: |
