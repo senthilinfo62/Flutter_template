@@ -1,5 +1,7 @@
+// Package imports:
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+// Project imports:
 import '../../domain/entities/todo.dart';
 
 part 'todo_model.freezed.dart';

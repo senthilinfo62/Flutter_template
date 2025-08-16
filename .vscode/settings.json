@@ -6,7 +6,7 @@
   "dart.showTodos": true,
   "dart.warnWhenEditingFilesOutsideWorkspace": true,
   "dart.warnWhenEditingFilesInPubCache": true,
-  
+
   // Code Formatting
   "editor.formatOnSave": true,
   "editor.formatOnType": true,
@@ -15,24 +15,24 @@
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit"
   },
-  
+
   // Linting
   "dart.analysisServerFolding": true,
   "dart.closingLabels": true,
   "dart.enableSdkFormatter": true,
   "dart.previewFlutterUiGuides": true,
   "dart.previewFlutterUiGuidesCustomTracking": true,
-  
+
   // File Associations
   "files.associations": {
     "*.dart": "dart",
     "*.yaml": "yaml",
     "*.yml": "yaml"
   },
-  
+
   // Auto Save
   "files.autoSave": "onFocusChange",
-  
+
   // Exclude Files
   "files.exclude": {
     "**/.git": true,
@@ -47,7 +47,7 @@
     "**/.dart_tool": true,
     "**/coverage": true
   },
-  
+
   // Search Exclude
   "search.exclude": {
     "**/*.g.dart": true,
@@ -58,41 +58,42 @@
     "**/coverage": true,
     "**/node_modules": true
   },
-  
+
   // Emmet
   "emmet.includeLanguages": {
     "dart": "html"
   },
-  
+
   // Terminal
   "terminal.integrated.defaultProfile.osx": "zsh",
   "terminal.integrated.defaultProfile.linux": "bash",
   "terminal.integrated.defaultProfile.windows": "PowerShell",
-  
+
   // Git
   "git.ignoreLimitWarning": true,
-  
+
   // Extensions
   "extensions.ignoreRecommendations": false,
-  
+
   // Bracket Pair Colorization
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": true,
-  
+
   // Minimap
   "editor.minimap.enabled": true,
   "editor.minimap.maxColumn": 120,
-  
+
   // Word Wrap
   "editor.wordWrap": "bounded",
   "editor.wordWrapColumn": 80,
-  
+
   // Rulers
   "editor.rulers": [80, 120],
-  
+
   // Whitespace
   "editor.renderWhitespace": "boundary",
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
-  "files.trimFinalNewlines": true
+  "files.trimFinalNewlines": true,
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

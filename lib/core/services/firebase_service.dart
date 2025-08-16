@@ -1,11 +1,13 @@
+// Flutter imports:
 import 'package:flutter/foundation.dart';
 
+// Package imports:
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Project imports:
 import '../utils/logger.dart';
 
 /// Firebase service provider
@@ -19,11 +21,9 @@ class FirebaseService {
   static FirebaseCrashlytics? _crashlytics;
   static FirebasePerformance? _performance;
 
-  /// Initialize Firebase services
+  /// Initialize Firebase services (assumes Firebase.initializeApp() already called)
   static Future<void> initialize() async {
     try {
-      await Firebase.initializeApp();
-
       _analytics = FirebaseAnalytics.instance;
       _crashlytics = FirebaseCrashlytics.instance;
       _performance = FirebasePerformance.instance;

@@ -71,6 +71,10 @@ coverage/
 **/ios/Runner/GoogleService-Info.plist
 **/android/app/google-services.json
 **/lib/firebase_options.dart
+firebase-debug.log
+firebase-debug.*.log
+firebase-service-account.json
+.env.firebase
 
 # Fastlane
 **/ios/fastlane/report.xml
@@ -142,3 +146,9 @@ local.properties
 
 # Node.js
 node_modules/
+
+# Setup scripts should be committed for easy project initialization
+!setup.sh
+!setup.bat
+!setup_new_project.py
+!SETUP_DEMO.md

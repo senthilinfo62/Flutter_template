@@ -1,5 +1,7 @@
+// Package imports:
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+// Project imports:
 import '../../domain/entities/user.dart';
 
 part 'user_model.freezed.dart';

@@ -1,3 +1,4 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 /// Custom scaffold with consistent styling and responsive behavior

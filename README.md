@@ -69,7 +69,7 @@ lib/
 - Android Studio / VS Code
 - Git
 
-### Installation
+### 🚀 Super Easy Setup (Recommended)
 
 1. **Clone the repository**
    ```bash
@@ -77,15 +77,47 @@ lib/
    cd Flutter_template
    ```
 
-2. **Install dependencies**
+2. **Run the setup script**
    ```bash
+   # macOS/Linux
+   ./setup.sh
+
+   # Windows
+   setup.bat
+   ```
+
+3. **Follow the interactive prompts** to configure:
+   - Project name (e.g., "My Awesome App")
+   - Package name (e.g., "my_awesome_app")
+   - Organization (e.g., "com.yourcompany")
+
+4. **Start building your app!**
+   ```bash
+   flutter run
+   ```
+
+**✨ What the setup script does:**
+- ✅ Updates package names across all platforms (Android, iOS, Flutter)
+- ✅ Configures Firebase templates with your package names
+- ✅ Updates documentation with your project details
+- ✅ Runs Flutter commands to finalize setup
+- ✅ Creates PROJECT_SETUP.md with your configuration summary
+
+### 🔧 Manual Setup (Advanced)
+
+1. **Clone and install dependencies**
+   ```bash
+   git clone https://github.com/senthilinfo62/Flutter_template.git
+   cd Flutter_template
    flutter pub get
    ```
 
-3. **Generate code**
+2. **Generate code**
    ```bash
    flutter packages pub run build_runner build --delete-conflicting-outputs
    ```
+
+3. **Configure your package name** (see docs/ENVIRONMENT_MANAGEMENT.md)
 
 4. **Run the app**
    ```bash
@@ -94,11 +126,13 @@ lib/
 
 ## 📱 App Store Deployment
 
-This template includes automatic deployment to app stores:
-- **iOS**: Automatic TestFlight uploads after successful builds
-- **Android**: Automatic Play Store Internal Release uploads
+This template includes automatic deployment based on environment:
+- **Development/Staging**: Firebase App Distribution for fast testing
+- **Production**: TestFlight (iOS) and Play Store (Android) for releases
 
-**Setup required:** See [App Store Deployment Guide](docs/APP_STORE_DEPLOYMENT.md) for configuration details.
+**Setup guides:**
+- [App Store Deployment](docs/APP_STORE_DEPLOYMENT.md) for production releases
+- [Firebase Distribution](docs/FIREBASE_DISTRIBUTION.md) for dev/stg testing
 
 ## 🌿 Multi-Environment Management
 

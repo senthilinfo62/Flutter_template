@@ -1,5 +1,7 @@
+// Package imports:
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+// Project imports:
 import '../../domain/entities/auth_token.dart';
 
 part 'auth_token_model.freezed.dart';

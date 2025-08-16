@@ -1,6 +1,8 @@
+// Package imports:
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Project imports:
 import '../utils/logger.dart';
 import 'analytics_service.dart';
 import 'firebase_service.dart';
